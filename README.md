@@ -1,5 +1,7 @@
 # Robocar ROS 2
 
+> **Version wesc (fork de `JasonChmn/Robocar_ROS2`, branche `wesc`).** La conduite passera par nos bibliothèques : `wesc` (protocole VESC en C, par l'UART de la Jetson) et `robocar_teleop` (manette). L'interface pour votre nœud (`/drive`, `/odom`, `/scan`) ne change pas. **En cours de conception** : tant que `docs/WESC_JAZZY.md` §9 n'est pas terminé, ce guide décrit encore la version F1TENTH (VESC en USB, `joy_teleop`). Les commandes de la manette changeront (`docs/WESC_JAZZY.md` §5).
+
 Une voiture autonome 1/10 (Traxxas) pilotée par **ROS 2 Jazzy**. La voiture fournit les briques de base :
 - la conduite, par le VESC et la manette ;
 - le LiDAR ;
