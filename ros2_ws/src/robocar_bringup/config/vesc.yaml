@@ -1,9 +1,10 @@
-# Base : f1tenth_system@jazzy-devel f1tenth_stack/config/vesc.yaml.
+# Paramètres de robocar_vesc (ros2_ws/src/robocar_vesc/README.md) et de vesc_to_odom.
 # Valeurs de départ : docs/ROBOCAR_TO_DO_ROS2.md §7.
 /**:
-  # paramètres communs aux trois nœuds vesc
+  # paramètres communs aux deux nœuds
   ros__parameters:
     # erpm = speed_to_erpm_gain * vitesse (m/s) + speed_to_erpm_offset
+    # En mode speed, le sens du moteur se règle par le signe du gain (l'odométrie le suit)
     speed_to_erpm_gain: 4614.0
     speed_to_erpm_offset: 0.0
 
@@ -12,26 +13,29 @@
     steering_angle_to_servo_gain: -0.88
     steering_angle_to_servo_offset: 0.50
 
+robocar_vesc:
+  ros__parameters:
+    # -> /dev/ttyTHS1 (UART J41) par udev, voir host/99-robocar.rules
     port: /dev/vesc
-    duty_cycle_min: 0.0
-    duty_cycle_max: 0.0
-    current_min: 0.0
-    current_max: 100.0
-    brake_min: -20000.0
-    brake_max: 200000.0
+    baud: 115200
+    # speed : SET_RPM (odométrie cohérente). duty : SET_DUTY, comportement de soukoukou
+    motor_mode: speed
     # ERPM, ±5000 ≈ ±1 m/s
     speed_min: -5000.0
     speed_max: 5000.0
-    position_min: 0.0
-    position_max: 0.0
+    # mode duty : max_speed (m/s) donne duty_max, zone morte du moteur sautée
+    max_speed: 1.0
+    duty_max: 0.20
+    duty_deadband: 0.06
+    # mode duty seulement, à mesurer roues en l'air (docs/WESC_JAZZY.md §7)
+    invert_motor: false
     servo_min: 0.20
     servo_max: 0.80
-
-ackermann_to_vesc_node:
-  ros__parameters:
-    # [robocar] vitesse 0 si rien sur ackermann_cmd pendant ce délai (s), voir third_party/VENDORED.md
+    # watchdog : moteur à 0 et plus d'ALIVE si rien sur ackermann_cmd pendant ce délai (s)
     # 0,1 s : /drive doit donc être publié à plus de 10 Hz
     cmd_timeout: 0.1
+    telemetry_rate: 50.0
+    read_timeout_ms: 20
 
 vesc_to_odom_node:
   ros__parameters:

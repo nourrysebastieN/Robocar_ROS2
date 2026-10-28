@@ -7,7 +7,7 @@ Version de `Robocar_ROS2` où la brique `control` n'utilise plus le driver VESC 
 
 Le reste ne change pas : image `ros:jazzy-ros-base`, un service `docker compose` par brique, `lidar`, `camera_3d_oak`, `camera`, l'interface étudiants (`/drive`, `/odom`, `/scan`) et l'arbitrage par `ackermann_mux`.
 
-> **État : documentation seulement.** Aucun paquet n'est écrit. Les dossiers `ros2_ws/src/wesc`, `robocar_vesc`, `robocar_teleop` et `robocar_msgs` contiennent seulement un `README.md` (sans `package.xml`, colcon les ignore). Le plan est au §9.
+> **État (2026-10-28) : étapes 1 à 4 et 6 écrites, pas encore essayées sur la voiture.** `wesc` est testé sans matériel ; `robocar_msgs`, `robocar_vesc`, `robocar_teleop`, `control.launch.py`, `Dockerfile`, `compose.yaml`, udev et `COLCON_IGNORE` sont faits. Reste : la sécurité du §6 côté essais (étape 5), et les étapes 7 et 8. Le plan est au §9. Mode d'emploi : `docs/WESC_DOCKER.md`.
 
 ## 1. Décisions
 

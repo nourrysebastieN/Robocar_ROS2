@@ -1,0 +1,22 @@
+# Paramètres de robocar_teleop (ros2_ws/src/robocar_teleop/README.md).
+# Rampe reprise de soukoukou (le_loto/RoboCar/src/control/speed.c), en fraction de max_speed.
+robocar_teleop:
+  ros__parameters:
+    # Vide : premier /dev/input/by-id/*F710*-event-joystick trouvé
+    device: ""
+    reconnect_period: 2.0
+    # /teleop et /drive_enable à 50 Hz : nécessaire au lock drive_enable (timeout 0,1 s)
+    publish_rate: 50.0
+    state_rate: 20.0
+    # Même valeur que max_speed de robocar_vesc
+    max_speed: 1.0
+    max_steering_angle: 0.34
+    stick_deadzone: 0.05
+    # Rampe : 20 Hz = SPEED_STEP 50 ms de soukoukou
+    ramp_rate: 20.0
+    throttle_curve: 2.0
+    accel_step: 0.029
+    decel_step: 0.071
+    brake_step: 0.286
+    cross_step: 0.357
+    cross_hold_ticks: 4

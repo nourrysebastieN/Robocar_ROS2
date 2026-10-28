@@ -8,10 +8,9 @@ SHELL ["/bin/bash", "-c"]
 # Dépendances apt, dans une couche à part pour que le cache survive aux changements de code
 RUN apt-get update && apt-get install -y --no-install-recommends \
       ros-jazzy-ackermann-msgs \
-      ros-jazzy-joy \
-      ros-jazzy-serial-driver \
-      # io_context (dépendance de serial_driver) en a besoin sans le déclarer
-      ros-jazzy-asio-cmake-module \
+      # robocar_teleop lit la manette dans /dev/input (pas de SDL ni de joy)
+      libevdev-dev \
+      pkg-config \
       ros-jazzy-robot-state-publisher \
       ros-jazzy-xacro \
       ros-jazzy-depthai-ros-driver \

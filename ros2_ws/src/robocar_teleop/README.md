@@ -2,7 +2,7 @@
 
 Nœud ROS 2 (C++) qui lit la F710 directement par **libevdev** et applique la logique de conduite de `soukoukou` (`le_loto/RoboCar/src/control/speed.c`). Remplace `joy` et `joy_teleop`.
 
-> **À écrire.** Pas encore de `package.xml` : colcon ignore ce dossier. Conception : `docs/WESC_JAZZY.md` §3 et §5.
+> **Écrit, compilé, pas encore essayé sur la voiture.** Conception : `docs/WESC_JAZZY.md` §3 et §5.
 
 ## Interface
 
@@ -52,12 +52,14 @@ Les numéros sont à relever avec `evtest` dans le conteneur, comme pour `joy_te
 
 | Paramètre | Défaut |
 |---|---|
-| `device` | `/dev/input/by-id/usb-Logitech_Wireless_Gamepad_F710_B76691B2-event-joystick` (propre à chaque dongle : à mettre par voiture) |
+| `device` | `""` : premier `/dev/input/by-id/*F710*-event-joystick` trouvé (sinon un chemin précis, ex. `…F710_B76691B2-event-joystick` sur `soukoukou`) |
 | `reconnect_period` | `2.0` s (comme `get_controller_dev`) |
 | `publish_rate` | `50.0` Hz |
+| `state_rate` | `20.0` Hz |
+| `stick_deadzone` | `0.05` (comme `deadzone` de `joy`) |
 | Rampe et direction | tableau ci-dessus |
 
-Le dongle de chaque voiture a son propre numéro de série dans le chemin `by-id` : prévoir une valeur par défaut qui prend le premier `*F710*-event-joystick` trouvé.
+Sans LB, la rampe est remise à 0 : un nouvel appui sur LB repart de l'arrêt. Les bornes des axes sont lues dans le pilote (`libevdev_get_abs_info`), pas supposées.
 
 ## Différences voulues avec `soukoukou`
 

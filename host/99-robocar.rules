@@ -10,8 +10,9 @@ SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", ENV{ID_MM_D
 SUBSYSTEM=="usb", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ENV{ID_MM_DEVICE_IGNORE}="1"
 SUBSYSTEM=="usb", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="7523", ENV{ID_MM_DEVICE_IGNORE}="1"
 
-# VESC (STM32 VCP) -> /dev/vesc
-SUBSYSTEM=="tty", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", SYMLINK+="vesc", MODE="0666"
+# VESC par l'UART du J41 (broches 8/10) -> /dev/vesc. Ne pas brancher l'USB du VESC en même temps.
+# L'ancienne règle USB (STM32 VCP 0483:5740) est retirée : un seul /dev/vesc.
+KERNEL=="ttyTHS1", SYMLINK+="vesc", MODE="0660", GROUP="dialout"
 
 # LiDAR, adaptateur USB-série CP2102 ou CH340 -> /dev/lidar
 # Si le GPS utilise aussi un de ces adaptateurs, distinguer par ATTRS{serial} ou KERNELS (port USB physique).
@@ -21,4 +22,4 @@ SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="7523", SYMLINK+="l
 # OAK-D Lite (Luxonis, Movidius) : accès USB sans root
 SUBSYSTEM=="usb", ATTRS{idVendor}=="03e7", MODE="0666"
 
-# F710 (046d:c21f en mode X) : pas de règle. joy la trouve par device_id via /dev/input (groupe input).
+# F710 (046d:c21f en mode X) : pas de règle. robocar_teleop la trouve dans /dev/input/by-id.

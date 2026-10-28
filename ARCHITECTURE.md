@@ -1,7 +1,7 @@
 # Robocar ROS 2 : architecture
 
 Jetson Nano (hôte Ubuntu 18.04), ROS 2 Jazzy dans Docker (ubuntu 24.04).\
-**Version wesc** : la brique `control` passe par nos bibliothèques (`wesc` pour le VESC, sur l'UART `/dev/ttyTHS1` ; `robocar_teleop` pour la manette) au lieu de `vesc_driver`, `ackermann_to_vesc`, `joy` et `joy_teleop` (F1TENTH). Conception et plan : `docs/WESC_JAZZY.md`. **Cible, pas encore écrite** : les paquets `wesc`, `robocar_vesc`, `robocar_teleop` et `robocar_msgs` n'ont qu'un `README.md`.\
+**Version wesc** : la brique `control` passe par nos bibliothèques (`wesc` pour le VESC, sur l'UART `/dev/ttyTHS1` ; `robocar_teleop` pour la manette) au lieu de `vesc_driver`, `ackermann_to_vesc`, `joy` et `joy_teleop` (F1TENTH). Conception et plan : `docs/WESC_JAZZY.md`. **Écrite, pas encore essayée sur la voiture** : paquets `wesc`, `robocar_vesc`, `robocar_teleop` et `robocar_msgs`.\
 Une brique = un service `docker compose`.\
 Démarrage : `README.md` (étudiants), `BOOTSTRAP.md` (préparer une voiture). Détails et TODO : `docs/ROBOCAR_TO_DO_ROS2.md`. Journal de mise en route : `A_FAIRE_SUR_LA_JETSON.md`.\
 État de la version F1TENTH au 2026-09-25 : `control` (VESC, F710) et `lidar` validés sur la voiture, roues en l'air, sécurité comprise. `camera_3d_oak` n'est pas encore testé, et la calibration au sol reste à faire.

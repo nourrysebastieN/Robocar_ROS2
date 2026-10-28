@@ -2,7 +2,7 @@
 
 Nœud ROS 2 (C++) entre `ackermann_mux` et le VESC, par la bibliothèque `wesc` sur l'UART de la Jetson. Remplace `ackermann_to_vesc` et `vesc_driver` (F1TENTH).
 
-> **À écrire.** Pas encore de `package.xml` : colcon ignore ce dossier. Conception : `docs/WESC_JAZZY.md` §3 et §6.
+> **Écrit, compilé, pas encore essayé sur la voiture.** Conception : `docs/WESC_JAZZY.md` §3 et §6.
 
 ## Interface
 
@@ -45,6 +45,10 @@ servo              = steering_angle_to_servo_gain × steering_angle + offset    
 
 En mode `duty`, le saut de la zone morte reprend `THROTTLE_DEADBAND` / `REVERSE_DEADBAND` de `soukoukou` (6 %).
 
+Vitesse nulle (ou watchdog) : `SET_DUTY 0` dans les deux modes (moteur libre), pas `SET_RPM 0` qui fait vibrer un moteur sans capteur à l'arrêt.
+
+`invert_motor` ne s'applique qu'en mode `duty`. En mode `speed`, le sens se règle par le signe de `speed_to_erpm_gain` : `vesc_to_odom` divise l'ERPM mesuré par ce même gain, l'odométrie reste donc juste.
+
 ## Paramètres
 
 | Paramètre | Défaut | Origine |
@@ -64,7 +68,7 @@ En mode `duty`, le saut de la zone morte reprend `THROTTLE_DEADBAND` / `REVERSE_
 | `telemetry_rate` | `50.0` (Hz) | fréquence de `vesc_driver` |
 | `read_timeout_ms` | `20` | délai d'une réponse `GET_VALUES` |
 
-Les paramètres communs restent dans `robocar_bringup/config/vesc.yaml`, section `/**`. `port` change de valeur (même nom de lien `/dev/vesc`, autre périphérique).
+Les gains communs avec `vesc_to_odom` restent dans `robocar_bringup/config/vesc.yaml`, section `/**` ; le reste dans la section `robocar_vesc`. `port` garde le nom `/dev/vesc` (lien udev vers `ttyTHS1`).
 
 ## Boucle (un seul fil)
 

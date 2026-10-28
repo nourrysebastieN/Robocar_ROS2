@@ -12,7 +12,7 @@ ackermann_mux:
         timeout: 0.2
         priority: 100
     locks:
-      # Déverrouillé seulement tant que joy_teleop publie false (RB maintenu).
+      # Déverrouillé seulement tant que robocar_teleop publie false (RB maintenu).
       # Expiré ou jamais reçu = verrouillé : /drive (priorité < 100) est masqué.
       # 0,1 s : avec le watchdog de 0,1 s, arrêt en 0,2 s au pire si la manette meurt
       drive_enable:

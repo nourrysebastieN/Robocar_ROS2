@@ -2,7 +2,7 @@
 
 Messages propres à la Robocar.
 
-> **À écrire.** Pas encore de `package.xml` : colcon ignore ce dossier. Conception : `docs/WESC_JAZZY.md` §3.
+> **Écrit, compilé, pas encore essayé sur la voiture.** Conception : `docs/WESC_JAZZY.md` §3.
 
 ## `msg/TeleopState.msg`
 

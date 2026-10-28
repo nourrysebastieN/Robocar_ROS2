@@ -15,10 +15,9 @@
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>robocar_description</exec_depend>
   <!-- control -->
-  <exec_depend>joy</exec_depend>
-  <exec_depend>joy_teleop</exec_depend>
+  <exec_depend>robocar_teleop</exec_depend>
   <exec_depend>ackermann_mux</exec_depend>
-  <exec_depend>vesc_driver</exec_depend>
+  <exec_depend>robocar_vesc</exec_depend>
   <exec_depend>vesc_ackermann</exec_depend>
   <!-- capteurs -->
   <exec_depend>ldlidar_stl_ros2</exec_depend>

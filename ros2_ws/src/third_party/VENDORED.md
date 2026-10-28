@@ -45,3 +45,16 @@ Chaque modification dans le code est marquée `[robocar]`.
 - `joy_teleop` (version F1TENTH) : profil `default`, actif quand aucun bouton n'est appuyé. C'est leur modification du paquet d'origine `ros-teleop/teleop_tools`, et la raison pour laquelle on n'utilise pas `ros-jazzy-joy-teleop` en apt.
 - `joy_teleop` : un profil `message_value` ne publie qu'une fois, au moment de l'appui. Pour publier en continu tant que le bouton est maintenu, utiliser `axis_mappings` avec une entrée `value` (c'est ce que fait le lock `drive_enable`).
 - `ackermann_mux` publie sur `ackermann_cmd`. Un lock qui n'a encore rien reçu, ou qui a expiré, est considéré comme verrouillé.
+
+## Notre code copié depuis `le_loto` (hors `third_party/`)
+
+| Dossier | Origine | Commit (date) |
+|---|---|---|
+| `ros2_ws/src/wesc/` | `git@github.com:TheSoukoukou/wesc.git` (`~/le_loto/wesc` sur la Jetson) | `7884cd90548c276f81508f9b8beb7fb81dee6d28` (2026-06-27) |
+| `ros2_ws/src/wesc/src/tty.c`, logique de `robocar_teleop` | `git@github.com:TheSoukoukou/RoboCar.git` (`~/le_loto/RoboCar`) | `f06352463fa7b64e62022f5f6d171717943f8bbd` (2026-06-30) |
+
+Copié le 2026-10-28 et réécrit : la liste des changements est dans `ros2_ws/src/wesc/README.md`.
+
+## Paquets plus compilés (version wesc)
+
+`COLCON_IGNORE` ajouté dans `vesc/vesc_driver/`, `vesc/vesc/` (métapaquet) et `teleop_tools/` (en entier) : remplacés par `robocar_vesc` et `robocar_teleop` (`docs/WESC_JAZZY.md` §3).

@@ -19,8 +19,13 @@ services:
       dockerfile: docker/Dockerfile
     command: ros2 launch robocar_bringup control.launch.py
     devices:
-      - /dev/vesc
-      - /dev/input
+      - /dev/vesc            # -> ttyTHS1 (UART J41) par udev
+    # Volume + règle cgroup plutôt que devices : la manette garde l'accès après un
+    # rebranchement du dongle (nouveau /dev/input/eventN, majeur 13)
+    volumes:
+      - /dev/input:/dev/input
+    device_cgroup_rules:
+      - 'c 13:* rmw'
 
   lidar:
     <<: *ros
