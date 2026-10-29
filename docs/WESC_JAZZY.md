@@ -113,7 +113,7 @@ Reprend la logique de `le_loto/RoboCar/src/control/speed.c`, mais elle produit u
 | `speed_control` : gâchette R2 0..255 → expo (`THROTTLE_CURVE` 2,0) | Même calcul, en fraction de `max_speed` |
 | `update_speed` : rampe lente à l'accélération, rapide au freinage, passage par zéro | Même rampe, en m/s/tick, timer à 20 Hz (50 ms comme `SPEED_STEP`) |
 | `brake_control` : L2 proportionnel | Identique |
-| `change_direction` (R1) | **Déplacé sur un autre bouton** : RB sert déjà au lock `drive_enable` (§5) |
+| `change_direction` (R1) | **Supprimé** : marche arrière par LT maintenu à l'arrêt (mapping jeu de voiture, §5). RB sert au lock `drive_enable` |
 | Pause au point mort à l'inversion (`CROSS_HOLD_TICKS`) | Identique |
 | Saut de la zone morte (`THROTTLE_DEADBAND`) | **Déplacé dans `robocar_vesc`** (mode `duty`) : c'est une propriété du moteur, pas de la manette |
 | `servo_control` : stick gauche X | `steering_angle` = X × `max_steering_angle` (0,34 rad) |
@@ -147,11 +147,11 @@ Les topics `/commands/motor/*` et `/commands/servo/position` de la version F1TEN
 
 | Commande | F1TENTH (`joy_teleop`) | `soukoukou` | **Notre version** |
 |---|---|---|---|
-| Homme mort conduite manuelle | LB maintenu | — | **LB maintenu** |
+| Homme mort conduite manuelle | LB maintenu | — | **LB maintenu** (désactivable : `require_deadman: false`) |
 | Accélérer | stick gauche vertical | R2 (gâchette) | **R2**, avec expo et rampe |
 | Freiner | — | L2 | **L2**, proportionnel |
 | Direction | stick droit horizontal | stick gauche horizontal | **stick gauche horizontal** |
-| Avant / arrière | signe du stick | R1 (bascule) | **Y** (`BTN_WEST`, bascule) |
+| Avant / arrière | signe du stick | R1 (bascule) | **LT maintenu à l'arrêt** = recule ; RT = avance (mapping jeu de voiture) |
 | Déverrouiller `/drive` | RB maintenu | — | **RB maintenu** (inchangé) |
 | Arrêt | relâcher LB | Home (quitte) | relâcher LB, ou **Home** (consigne nulle) |
 

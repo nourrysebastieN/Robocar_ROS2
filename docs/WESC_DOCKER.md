@@ -1,6 +1,6 @@
 # Lancer la version wesc dans Docker (WIP)
 
-Mode d'emploi de l'image `robocar:jazzy` construite avec nos paquets : `wesc` (VESC par l'UART), `robocar_vesc`, `robocar_teleop` (manette lue par libevdev). Conception : `docs/WESC_JAZZY.md`.
+Mode d'emploi de l'image `robocar:jazzy` construite avec nos paquets : `wesc` (VESC par l'UART), `robocar_vesc`, `robocar_teleop` (manette lue par libevdev). Conception : `docs/WESC_JAZZY.md`. Fonctionnement, avec schémas : `docs/WESC_FONCTIONNEMENT.md`.
 
 > **🚧 WIP (2026-10-28) : pas encore essayé sur la voiture.** Image construite et testée **sur PC seulement** (amd64, VESC simulé). Rien n'a encore tourné sur la Jetson : ce guide peut changer après le premier essai. Les lignes **« à vérifier »** n'ont pas pu être contrôlées sur la voiture.
 
@@ -10,9 +10,9 @@ Ce qui change pour qui connaît la version F1TENTH (`README.md`, `BOOTSTRAP.md`)
 |---|---|---|
 | Liaison VESC | USB, `/dev/vesc → ttyACM0` | **UART du J41**, `/dev/vesc → ttyTHS1` |
 | Manette | `joy` (SDL2) + `joy_teleop`, config `joy_teleop.yaml` | `robocar_teleop` (libevdev), config `teleop.yaml` |
-| Accélérer | LB + stick gauche vertical | LB + **gâchette RT**, frein **LT** |
+| Accélérer | LB + stick gauche vertical | LB + **gâchette RT**, frein **LT** (mapping jeu de voiture) |
 | Direction | stick droit | **stick gauche** horizontal |
-| Marche arrière | stick vers le bas | bouton **Y** (bascule avant / arrière) |
+| Marche arrière | stick vers le bas | **LT maintenu à l'arrêt** |
 | Message au démarrage | `Out-of-sync with VESC`, puis `Connected to VESC` | `/dev/vesc ouvert` |
 
 Ce qui ne change pas : le service `control`, le mux, le lock RB sur `/drive`, `/odom`, les autres services (`lidar`, caméras), `.env`.
@@ -133,15 +133,19 @@ Depuis le PC (Jazzy natif, `README.md` §2), les mêmes commandes `ros2` marchen
 | Commande | Effet |
 |---|---|
 | Rien | Arrêt, même si un nœud publie `/drive` |
-| **LB maintenu** + **RT** | Conduite manuelle : accélère, avec une rampe douce (expo 2,0) |
-| LB + **LT** | Freine, d'autant plus fort que la gâchette est enfoncée |
+| **LB maintenu** + **RT** | Accélère, avec une rampe douce (expo 2,0) |
+| LB + **LT** en avançant | Freine, d'autant plus fort que la gâchette est enfoncée |
+| LB + **LT maintenu à l'arrêt** | Recule, après une pause de 0,2 s |
+| LB + **RT** en reculant | Freine, pause de 0,2 s, puis repart en avant |
 | LB + stick gauche horizontal | Direction |
-| **Y** (appui) | Bascule avant / arrière ; la vitesse repasse par 0 avec une pause de 0,2 s |
 | **Home** | Consigne nulle immédiate |
 | **RB maintenu** | Un nœud étudiant conduit : `/drive` passe |
 | Manette perdue | Plus rien n'est publié : arrêt en moins de 0,2 s |
 
-Relâcher LB remet la rampe à 0 : un nouvel appui repart de l'arrêt. Vitesse max : `max_speed` = 1 m/s (`teleop.yaml` et `vesc.yaml`). Le dongle peut être débranché et rebranché sans redémarrer le conteneur.
+C'est le mapping des jeux de voiture, plus LB comme homme mort. Relâcher LB remet la rampe à 0 : un nouvel appui repart de l'arrêt.
+
+**Sans LB, comme un jeu** : `require_deadman: false` dans `teleop.yaml` (puis rebuild). RT et LT suffisent, la direction marche toujours, et relâcher RT ne fait que ralentir. Moins sûr : à réserver aux essais où quelqu'un tient la manette en permanence. Détail : `ros2_ws/src/robocar_teleop/README.md`.
+ Vitesse max : `max_speed` = 1 m/s (`teleop.yaml` et `vesc.yaml`). Le dongle peut être débranché et rebranché sans redémarrer le conteneur.
 
 ## 6. Premier essai, ROUES EN L'AIR
 
@@ -150,10 +154,11 @@ Dans l'ordre ; ne passer à la ligne suivante que si la précédente est bonne.
 | # | Essai | Attendu |
 |---|---|---|
 | 1 | Lancer `control`, ne rien toucher | `/sensors/core` publie à ~50 Hz (`rc ros2 topic hz /sensors/core`), `voltage_input` ≈ tension LiPo. Rien ne bouge |
-| 2 | `rc ros2 topic echo /teleop/state`, appuyer sur LB, RB, RT, LT, Y | `manual_enabled`, `drive_enabled`, `throttle`, `direction` suivent les boutons |
+| 2 | `rc ros2 topic echo /teleop/state`, appuyer sur LB, RB, RT, LT | `manual_enabled`, `drive_enabled`, `throttle`, `direction` suivent les boutons |
 | 3 | LB + un peu de RT | Les roues tournent **vers l'avant**. Sinon : en mode `speed`, inverser le signe de `speed_to_erpm_gain` dans `vesc.yaml` (pas `invert_motor`, qui ne sert qu'en mode `duty`) |
 | 4 | LB + stick gauche à gauche | Les roues braquent **à gauche**. Sinon : inverser le signe de `steering_angle_to_servo_gain` |
 | 5 | Relâcher LB en roulant | Arrêt |
+| 5 b | LB + LT maintenu, voiture arrêtée | Recule après 0,2 s ; RT freine puis repart en avant |
 | 6 | `rc ros2 topic pub -r 20 /drive ackermann_msgs/msg/AckermannDriveStamped "{drive: {speed: 0.5}}"` | Rien sans RB ; les roues tournent avec RB ; arrêt au relâchement |
 | 7 | Même chose, RB maintenu, Ctrl+C sur le `pub` | Arrêt en moins de 0,2 s (watchdog de `robocar_vesc`) |
 | 8 | RB maintenu, `docker compose kill control` | Arrêt en 0,5 s au plus (timeout du VESC : plus d'`ALIVE`) |

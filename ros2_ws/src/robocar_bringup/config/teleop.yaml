@@ -12,6 +12,9 @@ robocar_teleop:
     max_speed: 1.0
     max_steering_angle: 0.34
     stick_deadzone: 0.05
+    # Mapping jeu de voiture : RT accélère, LT freine puis recule.
+    # true : LB maintenu pour conduire (relâcher = arrêt). false : RT / LT seuls, comme un jeu
+    require_deadman: true
     # Rampe : 20 Hz = SPEED_STEP 50 ms de soukoukou
     ramp_rate: 20.0
     throttle_curve: 2.0

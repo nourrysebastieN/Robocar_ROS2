@@ -14,6 +14,7 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(LIBEVDEV REQUIRED IMPORTED_TARGET libevdev)
 
 add_executable(robocar_teleop_node src/robocar_teleop_node.cpp)
+target_include_directories(robocar_teleop_node PRIVATE include)
 target_compile_options(robocar_teleop_node PRIVATE -Wall -Wextra -Wpedantic)
 target_link_libraries(robocar_teleop_node
   rclcpp::rclcpp
@@ -23,5 +24,11 @@ target_link_libraries(robocar_teleop_node
   PkgConfig::LIBEVDEV)
 
 install(TARGETS robocar_teleop_node DESTINATION lib/${PROJECT_NAME})
+
+if(BUILD_TESTING)
+  find_package(ament_cmake_gtest REQUIRED)
+  ament_add_gtest(test_drive_ramp test/test_drive_ramp.cpp)
+  target_include_directories(test_drive_ramp PRIVATE include)
+endif()
 
 ament_package()
